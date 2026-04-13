@@ -35,8 +35,8 @@ export default function ParticleBackground() {
         this.density = (Math.random() * 30) + 1;
       }
 
-      draw() {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      draw(isLightMode) {
+        ctx.fillStyle = isLightMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(255, 255, 255, 0.5)';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.closePath();
@@ -79,8 +79,9 @@ export default function ParticleBackground() {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isLightMode = document.body.classList.contains('light-mode');
       for (let i = 0; i < particles.length; i++) {
-        particles[i].draw();
+        particles[i].draw(isLightMode);
         particles[i].update();
       }
       animationFrameId = requestAnimationFrame(animate);
