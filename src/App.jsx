@@ -8,6 +8,7 @@ import Admin from './pages/Admin';
 import Category from './pages/Category';
 import Product from './pages/Product';
 import Cart from './pages/Cart';
+import Settings from './pages/Settings';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           
           <Route path="/product/:id" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
         <Footer />
       </main>
