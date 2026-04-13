@@ -50,30 +50,16 @@ export default function Login() {
           };
           localStorage.setItem('userProfile', JSON.stringify(userProfile));
           
-          const pendingProduct = sessionStorage.getItem('pendingProduct');
+          // Force update navbar
+          window.dispatchEvent(new Event('profileUpdated'));
           
-          if (pendingProduct) {
-            const product = JSON.parse(pendingProduct);
-            sessionStorage.removeItem('pendingProduct');
-            
-            const waNumber = '212698969385';
-            const msgText = `مرحباً 👋
-
-أود تأكيد شراء المنتج التالي:
-📦 المنتج: ${product.name}
-💰 السعر: $${product.price}
-📂 الفئة: ${product.category}
-📧 حساب الموقع: ${formData.email}
-
-أرجو تزويدي بالتفاصيل ، شكراً!`;
-            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msgText)}`;
-            
+          const redirectToCart = sessionStorage.getItem('redirectToCart');
+          
+          if (redirectToCart) {
+            sessionStorage.removeItem('redirectToCart');
             setMsgType('success');
-            setMessage('تم التسجيل بنجاح! جاري تحويلك إلى WhatsApp...');
-            setTimeout(() => { 
-                window.open(waUrl, '_blank'); 
-                navigate('/'); 
-            }, 1200);
+            setMessage('تم التسجيل بنجاح! جاري تحويلك إلى السلة لإتمام الطلب...');
+            setTimeout(() => navigate('/cart'), 1500);
           } else {
             setMsgType('success');
             setMessage('تم التسجيل بنجاح! يتم تحويلك...');
