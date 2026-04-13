@@ -8,7 +8,7 @@ export default function Category({ title }) {
   useEffect(() => {
     setLoading(true);
     const category = title === 'Phones' ? 'phones' : title.toLowerCase();
-    fetch(`http://localhost:3000/api/products/${category}`)
+    fetch(`/api/products/${category}`)
       .then(res => res.json())
       .then(data => {
         setItems(data);

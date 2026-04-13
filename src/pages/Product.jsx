@@ -11,7 +11,7 @@ export default function Product() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3000/api/product/${id}`)
+    fetch(`/api/product/${id}`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
