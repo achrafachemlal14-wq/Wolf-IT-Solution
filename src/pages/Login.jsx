@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [msgType, setMsgType] = useState('error');
@@ -42,6 +42,14 @@ export default function Login() {
         });
         if (res.ok) {
           localStorage.setItem('userEmail', formData.email);
+          const userProfile = {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            avatar: '' // Default generic, updated in Settings
+          };
+          localStorage.setItem('userProfile', JSON.stringify(userProfile));
+          
           const pendingProduct = sessionStorage.getItem('pendingProduct');
           
           if (pendingProduct) {
@@ -131,6 +139,17 @@ export default function Login() {
               placeholder="name@example.com"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+          </div>
+          <div>
+            <label className="text-label-sm" style={{ display: 'block', marginBottom: '0.5rem' }}>رقم الهاتف</label>
+            <input
+              required
+              type="tel"
+              className="input-pro"
+              placeholder="+212 6... / +966 5..."
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
             />
           </div>
           <div>
