@@ -7,19 +7,30 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    // Check local storage for user
+    // Check local storage for user and cart
     const checkUser = () => {
       const saved = localStorage.getItem('userProfile');
       if (saved) setUserProfile(JSON.parse(saved));
     };
+    const updateCart = () => {
+      const cart = JSON.parse(localStorage.getItem('alpha_cart') || '[]');
+      setCartCount(cart.length);
+    };
+
     checkUser();
+    updateCart();
     
-    // Listen for custom event from Settings.jsx to update navbar instantly
+    // Listen for custom events
     window.addEventListener('profileUpdated', checkUser);
+    window.addEventListener('cartUpdated', updateCart);
     
-    return () => window.removeEventListener('profileUpdated', checkUser);
+    return () => {
+      window.removeEventListener('profileUpdated', checkUser);
+      window.removeEventListener('cartUpdated', updateCart);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -69,8 +80,13 @@ export default function Navbar() {
           </button>
         )}
 
-        <button onClick={() => navigate('/cart')} className="btn-icon transparent">
+        <button onClick={() => navigate('/cart')} className="btn-icon transparent" style={{ position: 'relative' }}>
           <ShoppingCart size={20} color="var(--color-on-surface)" />
+          {cartCount > 0 && (
+            <span style={{ position: 'absolute', top: '0', right: '0', background: '#E1306C', color: 'white', fontSize: '0.65rem', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'translate(25%, -25%)' }}>
+              {cartCount}
+            </span>
+          )}
         </button>
         <button className="btn-icon transparent" style={{ display: window.innerWidth <= 768 ? 'block' : 'none' }} onClick={() => setIsOpen(!isOpen)}>
           <Menu size={20} color="var(--color-on-surface)" />
